@@ -68,75 +68,73 @@ m.Board = Backbone.Collection.extend({
 var examples = board.examples || {};
 
 
-examples.triangle_board = new m.Board()
-                               .add([ // call add to make sure our listeners are called
-                                      {a: 0, b: 0, c: 0, 
-                                      neighbors: [
-                                          {a: -1, b: 0, c: 1},
-                                          {a: 1, b: -1, c: 0},
+examples.triangle_board = new m.Board();
+examples.triangle_board.add([ // call add to make sure our listeners are called
+                          {a: 0, b: 0, c: 0, 
+                          neighbors: [
+                              {a: -1, b: 0, c: 1},
+                              {a: 1, b: -1, c: 0},
+                              {a: 0, b: 1, c: -1}
+                                                 ]},
+                          {a: -1, b: 0, c: 1,
+                             neighbors: [
+                                          {a: 0, b: 0, c: 0},     
+                                          {a: 0, b: -1, c: 1},
+                                          {a: -1, b: -1, c: 2},
+                                          {a: -1, b: 1, c: 0}
+                                                              ]},
+                          {a: 1, b: -1, c: 0,
+                             neighbors: [
+                                          {a: 0, b: 0, c: 0}, 
+                                          {a: 2, b: -1, c: -1}, 
+                                          {a: 1, b: 0, c: -1}, 
+                                          {a: 0, b: -1, c: 1}
+                      
+                                                              ]},
+                          {a: 0, b: 1, c: -1,
+                             neighbors: [
+                                          {a: 0, b: 0, c: 0},
+                                          {a: -1, b: 2, c: -1},
+                                          {a: -1, b: 1, c: 0},
+                                          {a: 1, b: 0, c: -1}
+                                                              ]},
+                          
+                          
+                          {a: -1, b: 2, c: -1, 
+                             neighbors: [
+                                          {a: -1, b: 1, c: 0},
                                           {a: 0, b: 1, c: -1}
-                                                             ]},
-                                      {a: -1, b: 0, c: 1,
-                                         neighbors: [
-                                                      {a: 0, b: 0, c: 0},     
-                                                      {a: 0, b: -1, c: 1},
-                                                      {a: -1, b: -1, c: 2},
-                                                      {a: -1, b: 1, c: 0}
-                                                                          ]},
-                                      {a: 1, b: -1, c: 0,
-                                         neighbors: [
-                                                      {a: 0, b: 0, c: 0}, 
-                                                      {a: 2, b: -1, c: -1}, 
-                                                      {a: 1, b: 0, c: -1}, 
-                                                      {a: 0, b: -1, c: 1}
-                                  
-                                                                          ]},
-                                      {a: 0, b: 1, c: -1,
-                                         neighbors: [
-                                                      {a: 0, b: 0, c: 0},
-                                                      {a: -1, b: 2, c: -1},
-                                                      {a: -1, b: 1, c: 0},
-                                                      {a: 1, b: 0, c: -1}
-                                                                          ]},
-                                      
-                                      
-                                      {a: -1, b: 2, c: -1, 
-                                         neighbors: [
-                                                      {a: -1, b: 1, c: 0},
-                                                      {a: 0, b: 1, c: -1}
-                                                                          ]},
-                                   
-                                      {a: -1, b: 1, c: 0,
-                                             neighbors: [
-                                                      {a: -1, b: 2, c: -1},
-                                                      {a: -1, b: 0, c: 1},
-                                                      {a: 0, b: 1, c: -1}
-                                                                          ]},
-                                      {a: -1, b: -1, c: 2,
-                                          neighbors: [
-                                                      {a: -1, b: 0, c: 1},
-                                                      {a: 0, b: -1, c: 1}
-                                                                          ]},
-                                      {a: 0, b: -1, c: 1,
-                                          neighbors: [
-                                                      {a: -1, b: -1, c: 2},
-                                                      {a: 1, b: -1, c: 0},
-                                                      {a: -1, b: 0, c: 1}
-                                                                          ]},
-                                      {a: 1, b: 0, c: -1, 
-                                          neighbors: [
-                                                      {a: 2, b: -1, c: -1},
-                                                      {a: 1, b: 1, c: 0},
-                                                      {a: 0, b: 1, c: -1}
-                                                                          ]},
-                                      {a: 2, b: -1, c: -1,
-                                             neighbors: [
-                                                      {a: 1, b: -1, c: 0},
-                                                      {a: 1, b: 0, c: -1}
-                                                                          ]},
-                                    ]  
-                                      
-                                   );
+                                                              ]},
+                       
+                          {a: -1, b: 1, c: 0,
+                                 neighbors: [
+                                          {a: -1, b: 2, c: -1},
+                                          {a: -1, b: 0, c: 1},
+                                          {a: 0, b: 1, c: -1}
+                                                              ]},
+                          {a: -1, b: -1, c: 2,
+                              neighbors: [
+                                          {a: -1, b: 0, c: 1},
+                                          {a: 0, b: -1, c: 1}
+                                                              ]},
+                          {a: 0, b: -1, c: 1,
+                              neighbors: [
+                                          {a: -1, b: -1, c: 2},
+                                          {a: 1, b: -1, c: 0},
+                                          {a: -1, b: 0, c: 1}
+                                                              ]},
+                          {a: 1, b: 0, c: -1, 
+                              neighbors: [
+                                          {a: 2, b: -1, c: -1},
+                                          {a: 1, b: 1, c: 0},
+                                          {a: 0, b: 1, c: -1}
+                                                              ]},
+                          {a: 2, b: -1, c: -1,
+                                 neighbors: [
+                                          {a: 1, b: -1, c: 0},
+                                          {a: 1, b: 0, c: -1}
+                                                              ]},
+                        ]);
  
 board.examples = examples;
 })(window.board = window.board || {});
