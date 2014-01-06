@@ -4,7 +4,32 @@
   
   v.NodeView = Backbone.View.extend({
 
-    
+      events: {
+        'click': 1
+      
+      },
+
+      initialize: function (args) {
+          this.parent = args.parent;
+          this.x = args.x;
+          this.y = args.y;
+          this.listenTo(this.model, 'change', this.render);
+          this.render();
+      },
+
+      render: function() {
+           if (this.symbol) this.symbol.destroy();      
+           this.symbol = new Kinetic.Circle({
+                x: this.x,
+                y: this.y,
+                radius: 10
+            });
+           if (!this.model.get('owner')) this.symbol.setFill('black');
+           else this.symbol.setFill(this.model.get('owner').get('color'));
+           this.parent.node_group.add(this.symbol);
+           this.parent.node_layer.draw();
+      
+      } 
 
   });
 
@@ -19,25 +44,24 @@
             height: window.innerHeight
         });
 
-        var node_layer = new Kinetic.Layer();
+        this.node_layer = new Kinetic.Layer();
         var edge_layer = new Kinetic.Layer();
         this.stage.add(edge_layer);
-        this.stage.add(node_layer);
+        this.stage.add(this.node_layer);
 
         var edge_group = new Kinetic.Group({
                 x: this.stage.getWidth() / 2,
                 y: this.stage.getHeight() / 2
         });
 
-        var node_group = new Kinetic.Group({
+        this.node_group = new Kinetic.Group({
                 x: this.stage.getWidth() / 2,
                 y: this.stage.getHeight() / 2
         });
         edge_layer.add(edge_group);
-        node_layer.add(node_group);
+        this.node_layer.add(this.node_group);
 
         this.size = args.size || 50;
-        console.log(this.size);
         this.timeout = args.timeout || 200;
         this.speed = args.speed || 125;
         var that = this;
@@ -45,16 +69,7 @@
            var x = that.size * Math.sqrt(3) * (item.get('a') + item.get('c')/2.0);
            var y = that.size * 3/2.0 * item.get('c');
            setTimeout(function() {
-               var circle = new Kinetic.Circle({
-                    x: x,
-                    y: y,
-                    radius: 10,
-                    fill: 'green'
-                });
-
-               node_group.add(circle);
-               node_layer.draw();
-             
+               new v.NodeView({model: item, parent: that, x: x, y: y});
            }, that.timeout);
            that.timeout += that.speed;
            _.each(item.getNeighbors(), function(neigh) {
