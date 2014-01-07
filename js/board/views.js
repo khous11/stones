@@ -2,31 +2,31 @@
   board.views = {};
   var v = board.views;
   
-  v.NodeView = Backbone.View.extend({
+  v.NodeView = Backbone.KineticView.extend({
 
-      events: {
-        'click': 1
+      //events: {
+        //'click': 1
       
-      },
+      //},
 
       initialize: function (args) {
           this.parent = args.parent;
           this.x = args.x;
           this.y = args.y;
+          this.$el.setX(this.x);
+          this.$el.setY(this.y);
           this.listenTo(this.model, 'change', this.render);
           this.render();
       },
+     
+      el: function() {
+        return new Kinetic.Circle({radius: 10});
+      },
 
       render: function() {
-           if (this.symbol) this.symbol.destroy();      
-           this.symbol = new Kinetic.Circle({
-                x: this.x,
-                y: this.y,
-                radius: 10
-            });
-           if (!this.model.get('owner')) this.symbol.setFill('black');
-           else this.symbol.setFill(this.model.get('owner').get('color'));
-           this.parent.node_group.add(this.symbol);
+           if (!this.model.get('owner')) this.$el.setFill('black');
+           else this.$el.setFill(this.model.get('owner').get('color'));
+           this.parent.node_group.add(this.$el);
            this.parent.node_layer.draw();
       
       } 
