@@ -4,12 +4,17 @@ var m = board.models;
 
 m.Node = Backbone.Model.extend({
   
-  
+  initialize: function(args) {
+        this.listenTo(this.collection, 'change', function() {
+            //TODO: 
+        }); 
+  },
+
   getNeighbors: function() {
     // TODO: reimplement this when server is written
     var n_ids = this.get('neighbors');
     var neighbors = [];
-    for (ind in n_ids) {
+    for (var ind in n_ids) {
       var n_id = n_ids[ind];
       var node = this.collection.getNode(n_id.a, n_id.b, n_id.c);
       if (node) {

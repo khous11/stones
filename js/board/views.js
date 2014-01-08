@@ -4,10 +4,10 @@
   
   v.NodeView = Backbone.KineticView.extend({
 
-      //events: {
-        //'click': 1
+      events: {
+        'click': 'activate'
       
-      //},
+      },
 
       initialize: function (args) {
           this.parent = args.parent;
@@ -20,7 +20,7 @@
       },
      
       el: function() {
-        return new Kinetic.Circle({radius: 10});
+        return new Kinetic.Circle({radius: 12});
       },
 
       render: function() {
@@ -28,6 +28,11 @@
            else this.$el.setFill(this.model.get('owner').get('color'));
            this.parent.node_group.add(this.$el);
            this.parent.node_layer.draw();
+           return this; 
+      },
+
+      activate: function () {
+        this.model.set('active', true);
       
       } 
 
@@ -40,8 +45,8 @@
         this.listenTo(this.collection, 'change', this.render);
         this.stage = new Kinetic.Stage({
             container: this.el,
-            width: window.innerWidth,
-            height: window.innerHeight
+            width: args.width, //window.innerWidth,
+            height: args.height //windo.innerHeight
         });
 
         this.node_layer = new Kinetic.Layer();
@@ -94,7 +99,7 @@
     
     render: function() {
         this.stage.draw();
-        return this.el;
+        return this;
     },
     
   });
