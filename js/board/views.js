@@ -1,12 +1,11 @@
 (function(board) {
   board.views = {};
   var v = board.views;
-  
+ 
   v.NodeView = Backbone.KineticView.extend({
 
       events: {
         'click': 'activate'
-      
       },
 
       initialize: function (args) {
@@ -16,9 +15,10 @@
           this.$el.setX(this.x);
           this.$el.setY(this.y);
           this.listenTo(this.model, 'change', this.render);
+          this.listenTo(this.model, 'change:active', this.deactivate);
           this.render();
       },
-     
+ 
       el: function() {
         return new Kinetic.Circle({radius: 12});
       },
@@ -28,25 +28,41 @@
            else this.$el.setFill(this.model.get('owner').get('color'));
            this.parent.node_group.add(this.$el);
            this.parent.node_layer.draw();
-           return this; 
+           return this;
       },
 
-      activate: function () {
-        this.model.set('active', true);
-      
-      } 
+      activate: function (evt) {
+        this.model.activate();
+        evt.cancelBubble = true;
+        var node = this.$el;
+        if (this.anim) this.anim.stop(); 
+        this.anim = new Kinetic.Animation(function(frame){
+                var scale = Math.abs(Math.sin(frame.time / 500)) + 0.4;
+                node.setScale(scale); 
+            }, this.parent.node_layer);
+        this.anim.start();
+      },
 
+      deactivate: function(model, value, opts) {
+        if (!value) this.anim.stop();
+        this.$el.setScale(1);
+      }
   });
 
-  v.BoardView = Backbone.View.extend({
-    
+  v.BoardView = Backbone.KineticView.extend({
+ 
+    events: {
+        'click': 'deactivateAll'
+    },
+
     initialize: function(args) {
 
         this.listenTo(this.collection, 'change', this.render);
         this.stage = new Kinetic.Stage({
-            container: this.el,
-            width: args.width, //window.innerWidth,
-            height: args.height //windo.innerHeight
+            container: args.container,
+            width: args.width,
+            height: args.height,
+            fill: 'orange' 
         });
 
         this.node_layer = new Kinetic.Layer();
@@ -63,6 +79,17 @@
                 x: this.stage.getWidth() / 2,
                 y: this.stage.getHeight() / 2
         });
+
+        var background = new Kinetic.Rect({
+            x: this.stage.getX(),
+            y: this.stage.getY() + 100,
+            width: this.stage.getWidth(),
+            height: this.stage.getHeight() - 125,
+            fill: '#EEF3E2',
+            stroke: 'grey',
+            strokeWidth: 3
+        });
+        edge_layer.add(background);
         edge_layer.add(edge_group);
         this.node_layer.add(this.node_group);
 
@@ -89,19 +116,23 @@
                 edge_group.add(path);
                 edge_layer.draw();
                 }, that.timeout);
-           
+ 
                that.timeout += that.speed;
            });
         });
         this.timeout = args.timeout || 200;
+        this.setElement(this.stage);
     },
-    
-    
+ 
     render: function() {
         this.stage.draw();
         return this;
     },
     
+    deactivateAll: function(evt) {
+        var active = this.collection.where({'active': true}); 
+        _.each(active, function(item){ item.deactivate(); });
+    }
   });
-  
+ 
 })(window.board = window.board || {});
