@@ -1,4 +1,9 @@
+var stage = new Kinetic.Stage({
+    container: 'movie',
+    width: 500,
+    height: 500
+});
 
-var board = new board.views.BoardView({width: 500, height: 500, container: 'movie', collection: board.examples.triangle_board});
+var board = new board.views.BoardView({stage: stage, node_size: 50, collection: board.examples.triangle_board});
 
 

@@ -33,6 +33,14 @@ m.Node = Backbone.Model.extend({
 
   deactivate: function(model, opts) {
     this.set('active', false);
+  },
+
+  getX: function(size) { 
+    return size * Math.sqrt(3) * (this.get('a') + this.get('c')/2.0);
+  },
+
+  getY: function(size) { 
+    return size * 3/2.0 * this.get('c');
   }
 });
 
