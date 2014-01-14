@@ -20,7 +20,7 @@
       },
 
       el: function() {
-        return new Kinetic.Circle({radius: 12});
+        return new Kinetic.Circle({radius: 20});
       },
 
       render: function() {
@@ -57,27 +57,28 @@
 
     initialize: function(args) {
         var stage = this.stage = args.stage;
+        var width = args.width || stage.getWidth();
+        var height = args.height || stage.getHeight();
         var edge_layer = this.edge_layer = new Kinetic.Layer();
         var node_layer = this.node_layer = new Kinetic.Layer();
         stage.add(edge_layer);
         stage.add(node_layer);
 
-        //TODO these should be centered to board not stage
         var edge_group = this.edge_group = new Kinetic.Group({
-                x: stage.getWidth() / 2,
-                y: stage.getHeight() / 2
+                x: width / 2,
+                y: (height / 2) - 100
         });
 
         var node_group = this.node_group = new Kinetic.Group({
-                x: stage.getWidth() / 2,
-                y: stage.getHeight() / 2
+                x: width / 2,
+                y: (height / 2) - 100
         });
 
         var background = this.background = new Kinetic.Rect({
             x: args.x || 0,
             y: args.y || 0,
-            width: args.width || stage.getWidth(),
-            height: args.height || stage.getHeight(),
+            width: width, 
+            height:height,
             fill: '#EEF3E2',
             stroke: 'grey',
             strokeWidth: 2
