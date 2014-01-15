@@ -12,15 +12,12 @@
           this.parent = args.parent;
           this.x = args.x;
           this.y = args.y;
+          this.setElement(new Kinetic.Circle({radius: this.parent.node_size / 4}));
           this.$el.setX(this.x);
           this.$el.setY(this.y);
           this.listenTo(this.model, 'change', this.render);
           this.listenTo(this.model, 'change:active', this.deactivate);
           this.render();
-      },
-
-      el: function() {
-        return new Kinetic.Circle({radius: 20});
       },
 
       render: function() {
@@ -57,6 +54,7 @@
 
     initialize: function(args) {
         var stage = this.stage = args.stage;
+        var node_size = this.node_size = args.node_size;
         var width = args.width || stage.getWidth();
         var height = args.height || stage.getHeight();
         var edge_layer = this.edge_layer = new Kinetic.Layer();
@@ -66,12 +64,12 @@
 
         var edge_group = this.edge_group = new Kinetic.Group({
                 x: width / 2,
-                y: (height / 2) - 100
+                y: height / 4
         });
 
         var node_group = this.node_group = new Kinetic.Group({
                 x: width / 2,
-                y: (height / 2) - 100
+                y: height / 4
         });
 
         var background = this.background = new Kinetic.Rect({
@@ -79,22 +77,35 @@
             y: args.y || 0,
             width: width, 
             height:height,
+            fill: 'pink',
+            stroke: 'maroon',
+            strokeWidth: 4
+        });
+
+
+        var pedistal = this.pedistal =  new Kinetic.Rect({
+            x: args.x + 5 || 5,
+            y: args.y + 5 || 5,
+            width: width - 10, 
+            height:height - 10,
             fill: '#EEF3E2',
             stroke: 'grey',
-            strokeWidth: 2
+            strokeWidth: 2 
         });
+
         edge_layer.add(background);
+        edge_layer.add(pedistal);
         edge_layer.add(edge_group);
         node_layer.add(node_group);
         
         var that = this;
         this.collection.each(function(item){
-            var x = item.getX(args.node_size);
-            var y = item.getY(args.node_size);
+            var x = item.getX(node_size);
+            var y = item.getY(node_size);
             new v.NodeView({model: item, parent: that, x: x, y: y});
             _.each(item.getNeighbors(), function(neigh) {
-                var nx = neigh.getX(args.node_size);
-                var ny = neigh.getY(args.node_size);
+                var nx = neigh.getX(node_size);
+                var ny = neigh.getY(node_size);
                 var path = new Kinetic.Line({
                     points: [x, y, nx, ny],
                     stroke: 'black',
@@ -105,7 +116,7 @@
            });
         });
 
-        this.setElement(args.stage);
+        this.setElement(stage);
 
         // add listeners
         this.listenTo(this.collection, 'change', this.render);
