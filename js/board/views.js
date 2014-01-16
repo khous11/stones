@@ -12,7 +12,11 @@
           this.parent = args.parent;
           this.x = args.x;
           this.y = args.y;
-          this.setElement(new Kinetic.Circle({radius: this.parent.node_size / 4}));
+          this.setElement(new Kinetic.Circle({
+              radius: this.parent.node_size / 4,
+              stroke: 'darkgray',
+              strokeWidth: 1
+          }));
           this.$el.setX(this.x);
           this.$el.setY(this.y);
           this.listenTo(this.model, 'change', this.render);
@@ -64,12 +68,12 @@
 
         var edge_group = this.edge_group = new Kinetic.Group({
                 x: width / 2,
-                y: height / 4
+                y: height / 3
         });
 
         var node_group = this.node_group = new Kinetic.Group({
                 x: width / 2,
-                y: height / 4
+                y: height / 3 
         });
 
         var background = this.background = new Kinetic.Rect({
@@ -79,7 +83,7 @@
             height:height,
             fill: 'pink',
             stroke: 'maroon',
-            strokeWidth: 4
+            strokeWidth: 1
         });
 
 
