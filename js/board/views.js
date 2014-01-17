@@ -15,12 +15,13 @@
           this.setElement(new Kinetic.Circle({
               radius: this.parent.node_size / 4,
               stroke: 'darkgray',
-              strokeWidth: 1
+              strokeWidth: 2
           }));
           this.$el.setX(this.x);
           this.$el.setY(this.y);
           this.listenTo(this.model, 'change', this.render);
           this.listenTo(this.model, 'change:active', this.deactivate);
+          this.listenTo(this.model, 'change:type', this.setType);
           this.render();
       },
 
@@ -32,6 +33,35 @@
            return this;
       },
 
+      setType: function (model, value, opts) {
+        this.$el.hide();
+        if (value == 'triangle') {
+          this.setElement(new Kinetic.RegularPolygon({
+              sides: 3,
+              radius: this.parent.node_size / 3,
+              stroke: 'darkgray',
+              strokeWidth: 2
+          }));
+        } else if (value == 'circle') {
+          this.setElement(new Kinetic.Circle({
+              radius: this.parent.node_size / 4,
+              stroke: 'darkgray',
+              strokeWidth: 2
+          }));
+        } else if (value == 'square') {
+          this.setElement(new Kinetic.RegularPolygon({
+              sides: 4,
+              radius: this.parent.node_size / 3,
+              stroke: 'darkgray',
+              strokeWidth: 2
+          }));
+        } else {
+            throw 'recieved bad type ' + value;
+        }
+          this.$el.setX(this.x);
+          this.$el.setY(this.y);
+      },
+
       activate: function (evt) {
         this.model.activate();
         evt.cancelBubble = true;
@@ -41,11 +71,13 @@
                 var scale = Math.abs(Math.sin(frame.time / 500)) + 0.4;
                 node.setScale(scale);
             }, this.parent.node_layer);
-        this.anim.start();
+        if (this.model.get('active')) {
+            this.anim.start();
+        }
       },
 
       deactivate: function(model, value, opts) {
-        if (!value) this.anim.stop();
+        if (!value && this.anim) this.anim.stop();
         this.$el.setScale(1);
       }
   });
@@ -73,35 +105,35 @@
 
         var node_group = this.node_group = new Kinetic.Group({
                 x: width / 2,
-                y: height / 3 
+                y: height / 3
         });
 
         var background = this.background = new Kinetic.Rect({
             x: args.x || 0,
             y: args.y || 0,
-            width: width, 
+            width: width,
             height:height,
-            fill: 'pink',
-            stroke: 'maroon',
-            strokeWidth: 1
+            fill: 'darkgreen',
+            stroke: 'black',
+            strokeWidth: 2
         });
 
 
         var pedistal = this.pedistal =  new Kinetic.Rect({
             x: args.x + 5 || 5,
             y: args.y + 5 || 5,
-            width: width - 10, 
+            width: width - 10,
             height:height - 10,
             fill: '#EEF3E2',
             stroke: 'grey',
-            strokeWidth: 2 
+            strokeWidth: 2
         });
 
         edge_layer.add(background);
         edge_layer.add(pedistal);
         edge_layer.add(edge_group);
         node_layer.add(node_group);
-        
+
         var that = this;
         this.collection.each(function(item){
             var x = item.getX(node_size);
@@ -134,6 +166,7 @@
     deactivateAll: function(evt) {
         var active = this.collection.where({'active': true});
         _.each(active, function(item){ item.deactivate(); });
+        this.trigger('deactivateAll');
     }
   });
 

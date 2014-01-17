@@ -35,12 +35,36 @@ m.Node = Backbone.Model.extend({
     this.set('active', false);
   },
 
-  getX: function(size) { 
+  getX: function(size) {
     return size * Math.sqrt(3) * (this.get('a') + this.get('c')/2.0);
   },
 
-  getY: function(size) { 
+  getY: function(size) {
     return size * 3/2.0 * this.get('c');
+  },
+
+  conquered: function() {
+    var that = this;
+    var enemies = _.reject(this.getNeighbors(), function(item) {
+        return (item.get('owner') == that.get('owner')) || (item.get('owner') === undefined);
+    });
+    function _fight(type) {
+        return _.find(enemies, function(item) {return item.get('type') == type;});
+    }
+    var winner;
+    if (this.get('type') == 'triangle') {
+        winner = _fight('square');
+        if (winner) return winner;
+    } else if (this.get('type') == 'circle') {
+        winner = _fight('triangle');
+        if (winner) return winner;
+    } else if (this.get('type') == 'square') {
+        winner = _fight('circle');
+        if (winner) return winner;
+    } else {
+        return this.get('owner');
+    }
+    return this.get('owner');
   }
 });
 
